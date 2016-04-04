@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">GenuinoSPP</string>
+    <string name="action_settings">Connect</string>
+    <string name="txt_paired">Genuino found in paired devices</string>
+</resources>

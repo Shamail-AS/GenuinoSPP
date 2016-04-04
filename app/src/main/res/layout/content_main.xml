@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.example.shamail.genuinospp.MainActivity"
+    tools:showIn="@layout/activity_main">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Throttle"
+        android:id="@+id/textView"
+        android:layout_below="@+id/seek_throttle"
+        android:layout_alignStart="@+id/panel_orient" />
+
+    <SeekBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/seek_throttle"
+        android:layout_marginTop="43dp"
+        android:max="500"
+        android:progress="5"
+        android:indeterminate="false"
+        android:layout_below="@+id/txt_sent"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true" />
+
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Trying to connect to Genuino"
+        android:id="@+id/txt_conn_status"
+        android:layout_alignParentTop="true"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:layout_alignParentStart="true"
+        android:layout_alignEnd="@+id/seek_throttle"
+        android:textAlignment="center" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="no error when sending data"
+        android:id="@+id/txt_sent"
+        android:layout_below="@+id/panel_orient"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="35dp"
+        android:textSize="20dp"
+        android:textColor="#c93061" />
+
+    <LinearLayout
+    android:orientation="horizontal"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+        android:id="@+id/panel_orient"
+        android:layout_below="@+id/linearLayout"
+        android:layout_centerHorizontal="true">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:text="0"
+        android:layout_margin="5dp"
+        android:id="@+id/txt_throttle"
+        android:textSize="30dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:text="0"
+        android:layout_margin="5dp"
+        android:id="@+id/txt_roll"
+        android:textSize="30dp" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:text="0"
+        android:layout_margin="5dp"
+        android:id="@+id/txt_pitch"
+        android:textSize="30dp" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:text="0"
+        android:layout_margin="5dp"
+        android:id="@+id/txt_yaw"
+        android:textSize="30dp" />
+
+
+</LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/linearLayout"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Throttle"
+            android:layout_margin="5dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Roll"
+            android:layout_margin="5dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Pitch"
+            android:layout_margin="5dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Yaw"
+            android:layout_margin="5dp"/>
+
+
+    </LinearLayout>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="RIGHT"
+        android:id="@+id/btn_right"
+        android:layout_alignTop="@+id/btn_left"
+        android:layout_alignParentEnd="true"
+        android:layout_above="@+id/linearLayout"
+        android:layout_toEndOf="@+id/linearLayout"
+        android:textSize="40dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="LEFT"
+        android:id="@+id/btn_left"
+        android:layout_marginTop="63dp"
+        android:layout_below="@+id/txt_mode"
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@+id/linearLayout"
+        android:layout_above="@+id/linearLayout"
+        android:textSize="40dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Zero mode"
+        android:id="@+id/txt_mode"
+        android:layout_below="@+id/txt_conn_status"
+        android:layout_toEndOf="@+id/btn_left" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Input Read"
+        android:id="@+id/txt_recieved"
+        android:layout_below="@+id/textView"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TRIM"
+        android:id="@+id/btn_force"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="81dp" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="CALLIBRATE"
+        android:id="@+id/btn_call"
+        android:layout_above="@+id/btn_force" />
+
+</RelativeLayout>
