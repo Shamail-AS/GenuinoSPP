@@ -132,28 +132,7 @@
 
     </LinearLayout>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="RIGHT"
-        android:id="@+id/btn_right"
-        android:layout_alignTop="@+id/btn_left"
-        android:layout_alignParentEnd="true"
-        android:layout_above="@+id/linearLayout"
-        android:layout_toEndOf="@+id/linearLayout"
-        android:textSize="40dp" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="LEFT"
-        android:id="@+id/btn_left"
-        android:layout_marginTop="63dp"
-        android:layout_below="@+id/txt_mode"
-        android:layout_alignParentStart="true"
-        android:layout_toStartOf="@+id/linearLayout"
-        android:layout_above="@+id/linearLayout"
-        android:textSize="40dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -162,7 +141,68 @@
         android:text="Zero mode"
         android:id="@+id/txt_mode"
         android:layout_below="@+id/txt_conn_status"
-        android:layout_toEndOf="@+id/btn_left" />
+         />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_above="@+id/linearLayout"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="45dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="TRIM ROLL"
+            android:id="@+id/textView8"
+            android:textStyle="bold" />
+
+        <SeekBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/seek_trim_roll"
+            android:padding="12dp"
+            android:max="60"
+            android:progress="30"
+            android:indeterminate="false" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="TRIM PITCH"
+            android:id="@+id/textView9"
+            android:textStyle="bold" />
+
+        <SeekBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/seek_trim_pitch"
+            android:padding="12dp"
+            android:max="60"
+            android:progress="30"
+            android:indeterminate="false" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="TRIM YAW"
+            android:id="@+id/textView10"
+            android:textStyle="bold" />
+
+        <SeekBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/seek_trim_yaw"
+            android:padding="12dp"
+            android:max="60"
+            android:progress="30"
+            android:indeterminate="false" />
+    </LinearLayout>
 
     <TextView
         android:layout_width="wrap_content"
@@ -177,8 +217,8 @@
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TRIM"
-        android:id="@+id/btn_force"
+        android:text="TUNE SETTINGS"
+        android:id="@+id/btn_tune"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
         android:layout_marginBottom="81dp" />
@@ -189,6 +229,40 @@
         android:layout_height="wrap_content"
         android:text="CALLIBRATE"
         android:id="@+id/btn_call"
-        android:layout_above="@+id/btn_force" />
+        android:layout_above="@+id/btn_tune" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/txt_trims"
+        android:layout_alignBottom="@+id/btn_tune"
+        android:layout_toEndOf="@+id/btn_tune">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="0"
+            android:layout_margin="5dp"
+            android:id="@+id/txt_trim_roll"
+            android:textSize="30dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="0"
+            android:layout_margin="5dp"
+            android:id="@+id/txt_trim_pitch"
+            android:textSize="30dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="0"
+            android:layout_margin="5dp"
+            android:id="@+id/txt_trim_yaw"
+            android:textSize="30dp" />
+
+    </LinearLayout>
 
 </RelativeLayout>

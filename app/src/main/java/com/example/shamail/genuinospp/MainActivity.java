@@ -7,14 +7,11 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Menu;
@@ -33,6 +30,10 @@ import java.util.UUID;
 public class MainActivity extends AppCompatActivity implements Orientation.Listener {
 
     private Orientation orientation;
+    private BluetoothConnection blueConnman;
+    private FlightController flightController;
+
+    public final static String THROTTLE_MESSAGE = "com.example.shamail.genuinospp.THROTTLE";
 
 
     private static final int REQUEST_ENABLE_BT = 1;
@@ -53,13 +54,13 @@ public class MainActivity extends AppCompatActivity implements Orientation.Liste
     private TextView txtYaw;
     private TextView txtMode;
 
-    private int roll_offset = 0;
-    private int pitch_offset = 0;
-    private int yaw_offset = 0;
+    private TextView trim_txtRoll;
+    private TextView trim_txtPitch;
+    private TextView trim_txtYaw;
 
-    private int roll_trim = 0;
-    private int pitch_trim = 0;
-    private int yaw_trim = 0;
+    public int roll_offset = 0;
+    public int pitch_offset = 0;
+    public int yaw_offset = 0;
 
 
     private boolean zeroOut = true;
@@ -69,7 +70,12 @@ public class MainActivity extends AppCompatActivity implements Orientation.Liste
     private int _yaw = 0;
     private int _roll = 0;
     private int _pitch = 0;
-    private int _throttle = 0;
+
+    private SeekBar seek_trim_roll;
+    private SeekBar seek_trim_pitch;
+    private SeekBar seek_trim_yaw;
+    private SeekBar throttle_slider;
+
 
     // Well known SPP UUID
     private static final UUID MY_UUID =
@@ -88,15 +94,24 @@ public class MainActivity extends AppCompatActivity implements Orientation.Liste
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-              zeroOut = !zeroOut;
-               txtMode.setEnabled(zeroOut);
+                zeroOut = !zeroOut;
+                txtMode.setEnabled(zeroOut);
             }
         });
-        SeekBar throttle_slider = (SeekBar) findViewById(R.id.seek_throttle);
+
+        orientation = new Orientation((SensorManager) getSystemService(Activity.SENSOR_SERVICE),
+                getWindow().getWindowManager());
+        flightController = FlightController.getFlightController();
+        //blueConnman = BluetoothConnection.getConnection();
+
+        throttle_slider = (SeekBar) findViewById(R.id.seek_throttle);
+        seek_trim_pitch = (SeekBar) findViewById(R.id.seek_trim_pitch);
+        seek_trim_roll = (SeekBar) findViewById(R.id.seek_trim_roll);
+        seek_trim_yaw = (SeekBar) findViewById(R.id.seek_trim_yaw);
         throttle_slider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                _throttle = 1000+progress;
+                flightController.throttle = 800+progress;
                 sendOrientations();
             }
             @Override
@@ -105,20 +120,76 @@ public class MainActivity extends AppCompatActivity implements Orientation.Liste
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {}
         });
-        Button btnRight = (Button)findViewById(R.id.btn_right);
-        Button btnLeft = (Button)findViewById(R.id.btn_left);
-        Button btnForce = (Button)findViewById(R.id.btn_force);
+
+        seek_trim_pitch.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                flightController.pitch_trim = progress - 30;
+                sendOrientations();
+                setTrimSummary();
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+        seek_trim_roll.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                flightController.roll_trim = progress - 30;
+                sendOrientations();
+                setTrimSummary();
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+        seek_trim_yaw.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                flightController.yaw_trim = progress - 30;
+                sendOrientations();
+                setTrimSummary();
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        //Button btnRight = (Button)findViewById(R.id.btn_right);
+        //Button btnLeft = (Button)findViewById(R.id.btn_left);
+        Button btnTune = (Button)findViewById(R.id.btn_tune);
         Button btnCallibrate = (Button)findViewById(R.id.btn_call);
 
-        btnRight.setOnTouchListener(new View.OnTouchListener() {
+
+       /* btnRight.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if(event.getAction() ==MotionEvent.ACTION_DOWN) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     _yaw = 20;
                     return true;
                 }
-                if(event.getAction() == MotionEvent.ACTION_UP)
-                {
+                if (event.getAction() == MotionEvent.ACTION_UP) {
                     _yaw = 0;
                     return true;
                 }
@@ -141,26 +212,26 @@ public class MainActivity extends AppCompatActivity implements Orientation.Liste
                 return false;
             }
         });
-        btnForce.setOnClickListener(new View.OnClickListener() {
+        */
+        btnTune.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               // roll_trim = _roll;
-               // pitch_trim = _pitch;
-               // yaw_trim = _yaw;
+                Intent intent = new Intent(v.getContext(), DisplayTrimActivity.class);
+                startActivity(intent);
             }
         });
         btnCallibrate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //roll_offset = _roll;
-                //pitch_offset = _pitch;
-                //yaw_offset = _yaw;
+                roll_offset = _roll;
+                pitch_offset = _pitch;
+                yaw_offset = _yaw;
             }
         });
 
 
-        orientation = new Orientation((SensorManager) getSystemService(Activity.SENSOR_SERVICE),
-                getWindow().getWindowManager());
+
+
 
         connStatus = (TextView)findViewById(R.id.txt_conn_status);
         sentStatus = (TextView)findViewById(R.id.txt_sent);
@@ -172,10 +243,22 @@ public class MainActivity extends AppCompatActivity implements Orientation.Liste
         txtPitch = (TextView)findViewById(R.id.txt_pitch);
         txtYaw = (TextView)findViewById(R.id.txt_yaw);
 
+        trim_txtRoll = (TextView)findViewById(R.id.txt_trim_roll);
+        trim_txtPitch = (TextView)findViewById(R.id.txt_trim_pitch);
+        trim_txtYaw = (TextView)findViewById(R.id.txt_trim_yaw);
+
         btAdapter = BluetoothAdapter.getDefaultAdapter();
 
         CheckBTState();
 
+
+    }
+
+    private void setTrimSummary()
+    {
+        //trim_txtPitch.setText(flightController.pitch_trim);
+        //trim_txtRoll.setText(flightController.roll_trim);
+        //trim_txtYaw.setText(flightController.yaw_trim);
     }
 
     private boolean CheckBTState() {
@@ -221,12 +304,18 @@ public class MainActivity extends AppCompatActivity implements Orientation.Liste
     {
         super.onPause();
         orientation.stopListening();
+        sendMessage(BluetoothConnection.ORIENT_MSG_CODE + ":0:0:0:0;");
     }
 
     @Override
     public void onResume()
     {
+
         super.onResume();
+        //setTrimSummary();
+
+
+
         if(!orientation.startListening(this))
         {
             AlertBox("FATAL","Sensors aren't available");
@@ -273,6 +362,7 @@ public class MainActivity extends AppCompatActivity implements Orientation.Liste
             inStream = btSocket.getInputStream();
             inReader = new InputStreamReader(inStream);
             connStatus.setText("Channel is Open!!");
+            //blueConnman.setStreams(outStream,inStream,inReader);
 
 
         } catch (IOException e) {
@@ -293,7 +383,7 @@ public class MainActivity extends AppCompatActivity implements Orientation.Liste
 
         try{
             sentStatus.setText(msg);
-            outStream.write(msg.getBytes());
+           outStream.write(msg.getBytes());
             channelEnabled = false;
             connStatus.setText("Conn is disabled. Waiting for 'O'");
             return true;
@@ -306,15 +396,15 @@ public class MainActivity extends AppCompatActivity implements Orientation.Liste
     public boolean readMessage()
     {
         try{
-           if(inReader.ready())
-           {
-               char input = (char)inReader.read();
-               if( input == 'O'){
-                   channelEnabled = true;
-                   connStatus.setText("Conn is open. 'O' Received");
-               }
-               receivedStatus.setText("INPUT :: "+input);
-           }
+            if(inReader.ready())
+            {
+                char input = (char)inReader.read();
+                if( input == 'O'){
+                    channelEnabled = true;
+                    connStatus.setText("Conn is open. 'O' Received");
+                }
+                receivedStatus.setText("INPUT :: "+input);
+            }
             return true;
 
         } catch (IOException e) {
@@ -349,36 +439,49 @@ public class MainActivity extends AppCompatActivity implements Orientation.Liste
     public void OnOrientationChanged(float yaw, float pitch, float roll) {
         //_yaw = Math.round(yaw*100)/100;
 
-        _roll = Math.round(roll*75)/100 - roll_offset;
-        _pitch = Math.round(pitch*75)/100 - pitch_offset;
+        _roll = Math.round(roll*75)/100 - roll_offset ;
+        _pitch = Math.round(pitch*75)/100 - pitch_offset ;
         if(_roll > 30 ) _roll = 30;
         if(_roll < -30) _roll = -30;
 
         if(_pitch > 30) _pitch = 30;
         if(_pitch < -30) _pitch = -30;
 
-        if(!zeroOut)
-            sendOrientations();
-        else
-            sendMessage("0:0:0:"+_throttle+";");
+        txtThrottle.setText(String.valueOf(flightController.throttle));
+        txtRoll.setText(String.valueOf(_roll + flightController.roll_trim));
+        txtPitch.setText(String.valueOf(_pitch + flightController.pitch_trim));
+        txtYaw.setText(String.valueOf(_yaw + flightController.yaw_trim));
 
-        txtThrottle.setText(String.valueOf(_throttle));
-        txtRoll.setText(String.valueOf(_roll));
-        txtPitch.setText(String.valueOf(_pitch));
-        txtYaw.setText(String.valueOf(_yaw));
+        sendOrientations();
     }
 
     private void sendOrientations(){
+
+        int final_yaw = flightController.yaw_trim;
+        int final_roll = flightController.roll_trim;
+        int final_pitch = flightController.pitch_trim;
+
+        if(!zeroOut) {
+            final_pitch += _pitch;
+            final_roll += _roll;
+            final_yaw += _yaw;
+        }
+
         StringBuilder strBuilder = new StringBuilder();
-        strBuilder.append(_yaw-yaw_trim);
+        strBuilder.append(BluetoothConnection.ORIENT_MSG_CODE);
         strBuilder.append(':');
-        strBuilder.append(_pitch-pitch_trim);
+        strBuilder.append(final_yaw);
         strBuilder.append(':');
-        strBuilder.append(_roll-roll_trim);
+        strBuilder.append(final_pitch);
         strBuilder.append(':');
-        strBuilder.append(_throttle);
+        strBuilder.append(final_roll);
+        strBuilder.append(':');
+        strBuilder.append(flightController.throttle);
         strBuilder.append(";");
-        sendMessage(strBuilder.toString());
+        if(!zeroOut)
+            sendMessage(strBuilder.toString());
+        else
+            sendMessage(BluetoothConnection.ORIENT_MSG_CODE+":0:0:0:"+flightController.throttle+";");
     }
 
     private boolean ConnectToDevice(String deviceAddress)

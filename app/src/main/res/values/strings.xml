@@ -2,4 +2,5 @@
     <string name="app_name">GenuinoSPP</string>
     <string name="action_settings">Connect</string>
     <string name="txt_paired">Genuino found in paired devices</string>
+    <string name="title_activity_display_trim">DisplayTrimActivity</string>
 </resources>
